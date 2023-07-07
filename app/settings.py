@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import json
+import logging.config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-nfzfbjr(3a^duw^%10&rikn!lba!*f9(94$(-utyvybn77dnwe'
+SECRET_KEY = os.getenv("SECRET_KET", "super-secret")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1').split(',')
 
 
 # Application definition
@@ -75,8 +78,17 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.{}'.format(
+            os.getenv('DATABASE_ENGINE', 'sqlite3')
+        ),
+        'NAME': os.getenv('DATABASE_NAME', 'polls'),
+        'USER': os.getenv('DATABASE_USERNAME', 'myprojectuser'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD', 'password'),
+        'HOST': os.getenv('DATABASE_HOST', '127.0.0.1'),
+        'PORT': os.getenv('DATABASE_PORT', 5432),
+        'OPTIONS': json.loads(
+            os.getenv('DATABASE_OPTIONS', '{}')
+        ),
     }
 }
 
@@ -115,9 +127,40 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = 'staticfiles/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Logging Configuration
+
+# Clear prev config
+LOGGING_CONFIG = None
+
+# Get loglevel from env
+LOGLEVEL = os.getenv('DJANGO_LOGLEVEL', 'info').upper()
+
+logging.config.dictConfig({
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(asctime)s %(levelname)s [%(name)s:%(lineno)s] %(module)s %(process)d %(thread)d %(message)s',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console',
+        },
+    },
+    'loggers': {
+        '': {
+            'level': LOGLEVEL,
+            'handlers': ['console',],
+        },
+    },
+})
