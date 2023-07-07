@@ -10,7 +10,9 @@ ENV PYTHONUNBUFFERED=1
 # Install & use pipenv
 RUN set -ex \
   && apk add --no-cache --virtual .build-deps postgresql-dev build-base \
-  && python -m pip install --upgrade pip
+  && python -m pip install --upgrade pip \
+  && mkdir -p /app/staticfiles \
+  && chown -R 1000:1000 /app/staticfiles
 COPY Pipfile Pipfile.lock ./
 RUN pip install pipenv && pipenv install --dev --system --deploy
 
