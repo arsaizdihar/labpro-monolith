@@ -53,6 +53,9 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    'DJANGO_CSRF_ORIGINS', 'http://*.127.0.0.1').split(',')
+
 ROOT_URLCONF = 'app.urls'
 
 TEMPLATES = [
