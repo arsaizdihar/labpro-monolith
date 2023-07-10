@@ -9,6 +9,10 @@ django-dotenv = "*"
 psycopg2 = "*"
 gunicorn = "*"
 whitenoise = "*"
+djangorestframework-simplejwt = "*"
+django-bootstrap-v5 = "*"
+django-widget-tweaks = "*"
+djangorestframework = "*"
 
 [dev-packages]
 

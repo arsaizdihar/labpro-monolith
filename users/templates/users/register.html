@@ -1,0 +1,15 @@
+{% extends 'users/auth.html' %} {% block auth %}
+{% load bootstrap5 %}
+<form method="POST" novalidate class="form-group">
+  {% csrf_token %}
+  <h2>Register</h2>
+  {% bootstrap_form form %}
+  {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      Register
+    </button>
+  {% endbuttons %}
+
+</form>
+
+{% endblock auth%}
