@@ -42,6 +42,8 @@ class LoginView(View):
                 response = redirect("catalog")
                 login(response, user)
                 return response
+            form.add_error(None, "Invalid username or password")
+
         return render(request, 'users/login.html', {'form': form})
 
 
