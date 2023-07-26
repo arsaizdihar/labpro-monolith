@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+  <h1 class="my-4">{{ item.nama }}</h1>
+
+  <ul>
+    <li>Harga: Rp{{ item.harga }}</li>
+    <li>Stok: {{ item.stok }}</li>
+    <li>Kode: {{ item.kode }}</li>
+  </ul>
+
+  <form method="POST">
+    {% csrf_token %}
+    <input type="number" name="amount" id="amount" class="form-control" placeholder="Jumlah" required min="1"/>
+    <button type="submit" class="btn btn-primary mt-3">Beli barang</button>
+  </form>
+</div>
+{% endblock content %}

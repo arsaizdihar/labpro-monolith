@@ -5,7 +5,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     {% load bootstrap5 %} {% bootstrap_css %}
-    <title>My Site</title>
+    <title>{% block title %}OHL Monolith{% endblock title %}</title>
+    <meta name="description" content="{% block description %}Website for Lab Programming selection.{% endblock description %}"/>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -20,6 +21,9 @@
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="{% url "catalog" %}">Catalog</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url "history" %}">Riwayat</a>
+            </li>
             {% else %}
             <li class="nav-item">
               <a class="nav-link" href="{% url "login" %}">Login</a>
@@ -32,7 +36,7 @@
         </div>
       </div>
     </nav>
-    <main>{%block content %}{% endblock %}</main>
+    <main><div class="container">{% bootstrap_messages %}</div>{%block content %}{% endblock %}</main>
     {% bootstrap_javascript %}
   </body>
 </html>

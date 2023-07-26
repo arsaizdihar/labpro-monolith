@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
     'items.apps.ItemsConfig',
+    'service.apps.ServiceConfig',
     'bootstrap5',
     'widget_tweaks',
     'rest_framework',
@@ -89,8 +90,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=10),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': False,
@@ -113,8 +114,8 @@ SIMPLE_JWT = {
     'JTI_CLAIM': 'jti',
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    'SLIDING_TOKEN_LIFETIME': timedelta(days=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=10),
 
     # custom
     # Cookie name. Enables cookies if value is set.
@@ -220,3 +221,6 @@ logging.config.dictConfig({
         },
     },
 })
+
+SINGLE_API_URL = os.getenv('SINGLE_API_URL', 'http://localhost:3000')
+SERVICE_SECRET = os.getenv('SERVICE_SECRET', 'secret')

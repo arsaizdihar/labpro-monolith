@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+  <h1 class="my-4">Pembelian {{ item.nama }}</h1>
+
+  <ul>
+    <li>Jumlah pembelian: {{ buy_amount }}</li>
+    <li>Harga satuan: Rp{{ item.harga }}</li>
+    <li>Total harga: Rp{{ total_price }}</li>
+  </ul>
+  
+  <form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="amount" id="amount" class="form-control" placeholder="Jumlah" value="{{buy_amount}}" />
+    <input type="hidden" name="final" value="true" />
+    <button type="submit" class="btn btn-primary mt-3">Beli</button>
+  </form>
+</div>
+{% endblock content %}
