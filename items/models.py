@@ -9,6 +9,7 @@ class BuyHistory(models.Model):
     total = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    item_id = models.TextField()
 
     class Meta:
         ordering = ['-created_at']

@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from .models import BuyHistory
 
-from items.api import buy_item, get_item_detail, get_items_catalog, get_items_count
+from items import api
 
 
 class CatalogView(LoginRequiredMixin, View):
@@ -18,15 +18,15 @@ class CatalogView(LoginRequiredMixin, View):
             page = max(page, 1)
         except ValueError:
             page = 1
-        response = get_items_catalog(page)
-        count_response = get_items_count()
-        if response.ok and count_response.ok:
-            items = response.json()["data"]
+        (items_ok, items_json) = api.get_items_catalog(page)
+        (count_ok, count_json) = api.get_items_count()
+        if items_ok and count_ok:
+            items = items_json["data"]
             context = {
                 'items': items,
                 'page': page,
                 'startnum': (page - 1) * 10,
-                'page_total': ceil(count_response.json()["data"] / 10),
+                'page_total': ceil(count_json["data"] / 10),
             }
             return render(request, 'items/catalog.html', context=context)
         return render(request, '404.html')
@@ -36,9 +36,9 @@ class ItemDetailView(LoginRequiredMixin, View):
     login_url = "/login"
 
     def get(self, request, id, *args, **kwargs):
-        response = get_item_detail(id)
-        if response.ok:
-            item = response.json()["data"]
+        ok, json = api.get_item_detail(id)
+        if ok:
+            item = json["data"]
             context = {
                 'item': item,
             }
@@ -46,10 +46,10 @@ class ItemDetailView(LoginRequiredMixin, View):
         return render(request, '404.html')
 
     def post(self, request, id, *args, **kwargs):
-        response = get_item_detail(id)
-        if not response.ok:
+        ok, json = api.get_item_detail(id)
+        if not ok:
             return render(request, '404.html')
-        item = response.json()["data"]
+        item = json["data"]
         final = request.POST.get('final')
         stok = item["stok"]
         try:
@@ -69,14 +69,13 @@ class ItemDetailView(LoginRequiredMixin, View):
             messages.add_message(request, messages.ERROR, "Stok tidak cukup")
             return render(request, 'items/detail.html', context=context)
         if final:
-            response = buy_item(id, buy_amount)
-            if not response.ok:
-                print(response.json())
+            ok, _ = api.buy_item(id, buy_amount)
+            if not ok:
                 messages.add_message(
                     request, messages.ERROR, "Gagal membeli barang")
                 return render(request, 'items/detail.html', context=context)
             BuyHistory.objects.create(
-                name=item["nama"], amount=buy_amount, price=item["harga"], total=buy_amount * item["harga"], user=request.user)
+                name=item["nama"], amount=buy_amount, price=item["harga"], total=buy_amount * item["harga"], user=request.user, item_id=id)
             messages.add_message(request, messages.SUCCESS,
                                  "Berhasil membeli barang")
             return redirect('history')
