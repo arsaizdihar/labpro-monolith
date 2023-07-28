@@ -1,8 +1,8 @@
 from service.api import ServiceRequest
 
 
-def get_items_catalog(page: int):
-    return ServiceRequest.get('/barang', params={'page': page, 'limit': 10})
+def get_items_catalog(page: int, query: str = None):
+    return ServiceRequest.get('/barang', params={'page': page, 'limit': 10, 'q': query})
 
 
 def get_items_count():

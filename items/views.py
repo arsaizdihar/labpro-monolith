@@ -13,13 +13,15 @@ class CatalogView(LoginRequiredMixin, View):
     login_url = "/login"
 
     def get(self, request, *args, **kwargs):
+        query = request.GET.get('q')
         try:
             page = int(request.GET.get('page', 1))
             page = max(page, 1)
         except ValueError:
             page = 1
-        (items_ok, items_json) = api.get_items_catalog(page)
+        (items_ok, items_json) = api.get_items_catalog(page, query)
         (count_ok, count_json) = api.get_items_count()
+        print(query or "")
         if items_ok and count_ok:
             items = items_json["data"]
             context = {
@@ -27,6 +29,7 @@ class CatalogView(LoginRequiredMixin, View):
                 'page': page,
                 'startnum': (page - 1) * 10,
                 'page_total': ceil(count_json["data"] / 10),
+                'q': query or "",
             }
             return render(request, 'items/catalog.html', context=context)
         return render(request, '404.html')
