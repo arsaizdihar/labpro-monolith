@@ -29,7 +29,8 @@ SECRET_KEY = os.getenv("SECRET_KET", "super-secret")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', False)
 
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1').split(',')
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS',
+                          '127.0.0.1,localhost').split(',')
 
 
 # Application definition
@@ -63,7 +64,7 @@ MIDDLEWARE = [
 ]
 
 CSRF_TRUSTED_ORIGINS = os.getenv(
-    'DJANGO_CSRF_ORIGINS', 'http://*.127.0.0.1').split(',')
+    'DJANGO_CSRF_ORIGINS', 'http://*.127.0.0.1,http://localhost').split(',')
 
 ROOT_URLCONF = 'app.urls'
 
